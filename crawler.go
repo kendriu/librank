@@ -9,8 +9,8 @@ import (
 )
 
 // Crawl crawls audioteka for books
-func Crawl() map[string]Book {
-	books := make(map[string]Book)
+func Crawl() Books {
+	books := make(Books)
 	ch := make(chan Book)
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -95,7 +95,7 @@ func bookParser(c chan Book) func(*colly.HTMLElement) {
 			Title:    title,
 			Author:   authors,
 			Category: category,
-			URL:      e.Request.URL.String(),
+			URL:      URL(e.Request.URL.String()),
 		}
 		c <- b
 	}

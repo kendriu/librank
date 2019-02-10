@@ -18,7 +18,6 @@ func main() {
 		buf := new(bytes.Buffer)
 		enc := gob.NewEncoder(buf)
 		enc.Encode(books)
-		ioutil.WriteFile(path+"_"+strconv.Itoa(i), buf.Bytes(), 0600)
+		ioutil.WriteFile(, buf.Bytes(), 0600)
 	}
-
 }
