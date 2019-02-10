@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"librank"
 	"os"
+	"sort"
 	"strconv"
 
 	log "github.com/Sirupsen/logrus"
@@ -27,6 +28,20 @@ func loadBooks(path string) librank.Books {
 	return decoded
 
 }
+func printMissing(a, b librank.Books) {
+	for url := range a {
+		if _, ok := b[url]; !ok {
+			fmt.Println("\t" + a[url].Title)
+		}
+	}
+}
+func printDiff(a, b librank.Books) {
+	fmt.Println("Missing in first:")
+	printMissing(b, a)
+
+	fmt.Println("Missing in second:")
+	printMissing(a, b)
+}
 
 func main() {
 	librank.SetupLogger()
@@ -36,7 +51,12 @@ func main() {
 	for i := 0; i <= 9; i++ {
 		series[i] = loadBooks(path + "_" + strconv.Itoa(i+1))
 	}
+	sort.Slice(series, func(i, j int) bool {
+		return len(series[i]) < len(series[j])
+	})
+	var sample librank.Books
+	sample = series[8]
 	for _, books := range series {
-		fmt.Println(len(books))
+		printDiff(sample, books)
 	}
 }
