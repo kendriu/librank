@@ -14,7 +14,7 @@ func Crawl() Books {
 	ch := make(chan Book)
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go func() {
+	go func(wg *sync.WaitGroup) {
 
 		defer wg.Done()
 		for b := range ch {
@@ -24,7 +24,7 @@ func Crawl() Books {
 			}
 			books[b.URL] = b
 		}
-	}()
+	}(&wg)
 	c := audiotekaCrawler()
 	c.OnHTML(".view-product", bookParser(ch))
 
