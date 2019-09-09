@@ -1,10 +1,10 @@
-package librank
+package crawl
 
 //DEBUG enables debug mode
 const DEBUG = 0
 
 //CACHE enables cache og Audioteka pages
-const CACHE = 0
+const CACHE = 1
 
 //PARALLELISM limits parallel goroutines
-const PARALLELISM = 10
+const PARALLELISM = 1000

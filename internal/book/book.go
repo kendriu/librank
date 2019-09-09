@@ -1,4 +1,4 @@
-package librank
+package book
 
 //URL of a found book
 type URL string
