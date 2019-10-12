@@ -1,7 +1,7 @@
 package lubimy_czytac
 
 type Service interface {
-	Add(Book)
+	Update(*Book)
 	Prune()
 }
 
@@ -13,8 +13,10 @@ func NewService(repo Repository) Service {
 	return &ServiceImpl{repo: repo}
 }
 
-func (s *ServiceImpl) Add(Book) {
-	panic("implement me")
+func (s *ServiceImpl) Update(book *Book) {
+	repoBook :=s.repo.get(book.NeedleTitle)
+	repoBook.updateItems(book.Items)
+	s.repo.save(repoBook)
 }
 
 func (s *ServiceImpl) Prune() {

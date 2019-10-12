@@ -15,37 +15,6 @@ type Repository interface {
 	prune()
 }
 
-type JsonRepository struct {
-	path string
-}
-
-func NewJsonRepository(path string) *JsonRepository {
-	return &JsonRepository{path: path}
-}
-
-func (j JsonRepository) save(book Book) {
-
-	f, err := os.OpenFile("text.log",
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	if _, err := f.WriteString("text to append\n"); err != nil {
-		panic(err)
-	}
-}
-
-func (j JsonRepository) all() []Book {
-	panic("implement me")
-}
-
-func (j JsonRepository) prune() {
-	if err := os.Remove(j.path); ! os.IsNotExist(err) {
-		panic(err)
-	}
-}
-
 type ScribbleRepository struct {
 	dir            string
 	db             *scribble.Driver

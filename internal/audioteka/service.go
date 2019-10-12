@@ -15,7 +15,11 @@ func NewService(repo Repository) Service {
 }
 
 func (s *ServiceImpl) GetTitles() []string {
-	panic("implement me")
+	var titles []string
+	for _, book := range s.repo.all(){
+		titles = append(titles, book.Title)
+	}
+	return titles
 }
 
 func (s *ServiceImpl) Add(book Book) {

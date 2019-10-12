@@ -18,14 +18,15 @@ func (r RequestsProvider) startRequests(g *geziyor.Geziyor) {
 	titles := r.audiotekaService.GetTitles()
 	titles = titles[1:3]
 	for _, t := range titles {
-		parser := FoundParser{needleTitle: t}
+		parser := FoundParser{
+			lubimy_czytac.Book{NeedleTitle: t,
+			}}
 		g.Get(fmt.Sprintf("http://lubimyczytac.pl/szukaj/ksiazki/1?phrase=%s", t), parser.parse)
 	}
 }
 
 type FoundParser struct {
-	needleTitle string
-	foundBooks  []*lubimy_czytac.Book
+	book lubimy_czytac.Book
 }
 
 func (f *FoundParser) parse(g *geziyor.Geziyor, r *client.Response) {
@@ -36,11 +37,11 @@ func (f *FoundParser) parse(g *geziyor.Geziyor, r *client.Response) {
 			authors = append(authors, s.Text())
 		})
 
-		book := lubimy_czytac.NewBook(
+		item := lubimy_czytac.NewCatalogueItem(
 			s.Find(".bookTitle").Text(),
 			authors,
 		)
-		f.foundBooks = append(f.foundBooks, book)
-		g.Exports <- f
+		f.book.Add(*item)
+		g.Exports <- f.book
 	})
 }
