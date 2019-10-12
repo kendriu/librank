@@ -84,7 +84,7 @@ func (s ScribbleRepository) all() []Book {
 
 func (s ScribbleRepository) prune() {
 	dbPath := filepath.Join(s.dir, s.collectionName)
-	if err := os.Remove(dbPath); !os.IsNotExist(err) {
+	if err := os.RemoveAll(dbPath); err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
 
@@ -95,5 +95,5 @@ func NewScribbleRepository(dir string) *ScribbleRepository {
 	if err != nil {
 		panic(err)
 	}
-	return &ScribbleRepository{dir: dir, db: db, collectionName: "audioteka_books"}
+	return &ScribbleRepository{dir: dir, db: db, collectionName: "audioteka"}
 }

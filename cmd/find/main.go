@@ -5,17 +5,24 @@ import (
 	"github.com/geziyor/geziyor/cache/diskcache"
 	"github.com/geziyor/geziyor/export"
 	"github.com/kendriu/librank/internal"
+	"github.com/kendriu/librank/internal/audioteka"
 	"github.com/kendriu/librank/internal/lubimy_czytac"
 	"github.com/spf13/viper"
 )
 
 func main() {
 	internal.Configure()
-	exporter := &export.JSON{FileName: viper.GetString("FoundBooksPath")}
+	tmpPath :=viper.GetString("TmpPath")
+	requestsProvider := RequestsProvider{
+		audioteka.NewService(
+			audioteka.NewScribbleRepository(tmpPath))}
+
+	exporter := &Exporter{lubimy_czytac.NewService(
+		lubimy_czytac.NewScribbleRepository(tmpPath))}
+
 	options := &geziyor.Options{
-		Cache:             diskcache.New("./librank_cache"),
-		StartRequestsFunc: lubimy_czytac.StartRequests,
-		//ParseFunc:             audioteka.CategoriesParse,
+		Cache:                 diskcache.New("./tmp/librank_cache"),
+		StartRequestsFunc:     requestsProvider.startRequests,
 		Exporters:             []export.Exporter{exporter},
 		AllowedDomains:        []string{"lubimyczytac.pl"},
 		ConcurrentRequests:    1,

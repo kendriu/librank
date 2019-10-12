@@ -11,8 +11,7 @@ import (
 )
 
 func CategoriesParse(g *geziyor.Geziyor, r *client.Response) {
-	log.Println("Parsing Category")
-	r.HTMLDoc.Find(".view-product").Each(func(i int, s *goquery.Selection) {
+	r.HTMLDoc.Find(".view-product").Each(func(_ int, s *goquery.Selection) {
 		aBook := getBook(s, r.Request.URL.String())
 		for _, author := range aBook.Author {
 			switch author {
@@ -26,12 +25,24 @@ func CategoriesParse(g *geziyor.Geziyor, r *client.Response) {
 	})
 
 	selector := ".fs17 a, .all-categories a, .items-loader a, .item__title a"
-	r.HTMLDoc.Find(selector).Each(func(i int, s *goquery.Selection) {
+	r.HTMLDoc.Find(selector).Each(func(_ int, s *goquery.Selection) {
 		if href, ok := s.Attr("href"); ok {
 			switch {
-			case strings.Contains(href, "prasa-n"),
-				strings.Contains(href, "polityka-n"),
+			case strings.Contains(href, "angielski-n"),
+				strings.Contains(href, "chinski-n"),
+				strings.Contains(href, "dla-dzieci"),
 				strings.Contains(href, "do-rzeczy"),
+				strings.Contains(href, "hiszanski-n"),
+				strings.Contains(href, "inne-jezyki-n"),
+				strings.Contains(href, "ksiazki-anglojezyczne"),
+				strings.Contains(href, "nauka-jezykow-n"),
+				strings.Contains(href, "niemecki-n"),
+				strings.Contains(href, "polityka-n"),
+				strings.Contains(href, "prasa-n"),
+				strings.Contains(href, "rosyjski-n"),
+				strings.Contains(href, "wiek-powyzej-lat-7"),
+				strings.Contains(href, "wierszyki-i-zarciki"),
+				strings.Contains(href, "wloski-n"),
 				strings.Contains(href, "wprost-n"):
 				return
 			default:
