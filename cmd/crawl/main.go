@@ -1,27 +1,32 @@
 package main
 
 import (
-	"github.com/fpfeng/httpcache/diskcache"
+	"log"
+
 	"github.com/geziyor/geziyor"
+	"github.com/geziyor/geziyor/cache/diskcache"
 	"github.com/geziyor/geziyor/export"
+	"github.com/kendriu/librank/internal"
 	"github.com/kendriu/librank/internal/audioteka"
-	"github.com/kendriu/librank/internal/crawl"
+	"github.com/spf13/viper"
 )
 
-
 func main() {
-	//exporter := librank.GOBExporter{FileName: "./tmp/audioteka.gob"}
+	internal.Configure()
+	log.Print("Scrapping audioteka.pl")
 
-	exporter := &export.JSON{FileName:"./tmp/audioteka.json"}
-	//exporter := &export.PrettyPrint{}
-	geziyor.NewGeziyor(&geziyor.Options{
+	exporter := &Exporter{audioteka.NewService(
+		audioteka.NewScribbleRepository(viper.GetString("TmpPath")))}
+
+	options := &geziyor.Options{
 		Cache:                 diskcache.New("./librank_cache"),
 		StartURLs:             []string{"http://audioteka.com/pl/audiobooks"},
-		ParseFunc:             audioteka.CategoriesParse,
+		ParseFunc:             CategoriesParse,
 		Exporters:             []export.Exporter{exporter},
 		AllowedDomains:        []string{"audioteka.com"},
-		ConcurrentRequests:    crawl.PARALLELISM,
+		ConcurrentRequests:    viper.GetInt("ConcurrentRequests"),
 		LogDisabled:           true,
 		CharsetDetectDisabled: true,
-	}).Start()
+	}
+	geziyor.NewGeziyor(options).Start()
 }
